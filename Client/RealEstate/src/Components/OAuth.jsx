@@ -15,13 +15,14 @@ export default function OAuth() {
  
         const result = await signInWithPopup(auth,provider)
 
-        console.log(result);
+        console.log("this is the oauth result",result);
 
         const res = await fetch('/api/auth/google',{
             method:'post',
             headers:{
                 'Content-Type':'application/json',
             },
+            credentials: 'include',
             body:JSON.stringify({
                 name:result.user.displayName,
                 email:result.user.email,
@@ -29,7 +30,10 @@ export default function OAuth() {
             }),
         })
         const data = await res.json()
+        console.log("OAuth - Backend Response:", data); // ✅ Debugging
         dispatch(signinsuccess(data))
+        console.log(data);
+        
         navigate('/')
 
      } catch (error) {

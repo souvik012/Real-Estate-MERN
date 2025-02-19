@@ -14,9 +14,12 @@ const userSlice = createSlice({
             state.loading = true;
         },
         signinsuccess: (state, action) => {
+            console.log("Redux received user:", action.payload);
             state.currentuser = action.payload;
             state.loading = false;
             state.error = null;
+            console.log("Redux Updated - Current User:", action.payload); // ✅ Debugging
+
         },
         signinfailure: (state, action) => {
             state.error = action.payload;

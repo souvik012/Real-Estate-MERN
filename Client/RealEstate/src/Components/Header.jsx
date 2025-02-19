@@ -1,9 +1,15 @@
 import {FaSearch} from 'react-icons/fa'
 import {Link} from 'react-router-dom'
+import {useSelector} from 'react-redux'
 
 import React from 'react'
 
 function Header() {
+  const {currentuser} = useSelector(state =>state.user)
+  console.log("Current User:", currentuser);
+  console.log("Avatar URL from Redux:", currentuser?.avatar);
+
+
   return (
     <header className='bg-sky-200 shadow-md'>
 
@@ -37,8 +43,19 @@ function Header() {
         <Link to='/'><li className='text-sky-900 hidden sm:inline hover:underline'>Home</li></Link>
         <Link to='/about'><li className='text-sky-900 hidden sm:inline hover:underline'>About</li></Link>
         {/* <Link to='/contact'><li className='text-sky-900 hidden sm:inline hover:underline'>Contact</li></Link> */}
-        <Link to='/signin'><li className='text-sky-900 sm:inline hover:underline'>Sign In</li></Link>
-        <Link to='/profile'><li className='text-sky-900 hidden sm:inline hover:underline'>Profile</li></Link>
+        <Link to='/Profile'>
+         {currentuser?(
+          <img
+          className='rounded-full h-7 w-7 object-cover'
+          src={currentuser.avatar}
+          alt='Profile'
+        />
+        
+         ):(
+          <li className='text-sky-900 sm:inline hover:underline'>Sign In</li>
+         )}
+        </Link>
+        {/* <Link to='/profile'><li className='text-sky-900 hidden sm:inline hover:underline'>Profile</li></Link> */}
 
        </ul>
 
