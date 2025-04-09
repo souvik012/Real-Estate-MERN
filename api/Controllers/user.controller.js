@@ -22,7 +22,7 @@ export const updateUser = async (req , res ,next) => {
             username:req.body.username,
             email:req.body.email,
             password:req.body.password,
-            avatar:req.body.avatar,
+            //avatar:req.body.avatar,
          }
        },{new: true})
 
@@ -33,3 +33,16 @@ export const updateUser = async (req , res ,next) => {
        next(error)
     }
 }
+
+export const deleteUser = async (req, res) => {
+    if (req.user.id !== req.params.id) {
+      return res.status(403).json("You can delete only your own account!");
+    }
+    try {
+      await User.findByIdAndDelete(req.params.id);
+      res.status(200).json("User has been deleted.");
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  };
+  

@@ -40,7 +40,10 @@ export const signin = async(req , res , next) => {
     res.cookie(
       'access_token' , 
        token, 
-       {httpOnly: true}
+       {httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',  // ✅ Secure ONLY in production
+        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',  // ✅ Only use 'None' with secure
+      }
       )
        .status(200)
        .json(rest)
@@ -60,7 +63,12 @@ export const google = async (req, res, next) => {
       const { password: pass, ...rest } = user._doc;  // Exclude password
   
       return res
-          .cookie('access_token', token, { httpOnly: true })
+          .cookie('access_token',
+            token,
+            { httpOnly: true,
+              secure: process.env.NODE_ENV === 'production',  // ✅ Secure ONLY in production
+              sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',  // ✅ Only use 'None' with secure
+            })
           .status(200)
           .json(rest);  // Send only required user data
   } else {

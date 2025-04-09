@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-
+import { ToastContainer } from 'react-toastify';
 // import './App.css'
 import Home from './Pages/Home'
 import SignIn from './Pages/SignIn'
@@ -22,6 +22,10 @@ function App() {
          </Route>
          <Route path='/About' element={<About />}/>
     </Routes>
+    <>
+      {/* your routes/components */}
+      <ToastContainer position="top-center" />
+    </>
     </BrowserRouter>
   )
 }

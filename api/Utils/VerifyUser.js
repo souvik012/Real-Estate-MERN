@@ -1,5 +1,5 @@
-import jwt from "jsonwebtoken";
-import { errHandler } from "../Utils/error.js";
+import jwt from 'jsonwebtoken';
+import { errHandler } from '../Utils/error.js';
 
 export const verifyToken = (req, res, next) => {
     console.log("Cookies received:", req.cookies); // Debugging

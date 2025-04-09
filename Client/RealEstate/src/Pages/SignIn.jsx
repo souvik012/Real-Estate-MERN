@@ -30,6 +30,7 @@ import OAuth from '../Components/OAuth.jsx'
         headers:{
           'Content-Type':'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(formdata),
       })
       const data = await res.json();
