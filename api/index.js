@@ -24,6 +24,8 @@ mongoose
 
 const app = express();
 
+app.use(cookieParser())
+
  app.use(cors({
    origin: 'http://localhost:5173', // Adjust if your frontend runs on a different port
    credentials: true, // Allow cookies to be sent
@@ -34,7 +36,7 @@ const app = express();
 
 app.use(express.json());
 
-app.use(cookieParser())
+
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000 !!!');
