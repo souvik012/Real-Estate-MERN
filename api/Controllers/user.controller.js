@@ -1,6 +1,7 @@
 import bcryptjs from 'bcryptjs';
 import { errHandler } from '../Utils/error.js';
 import User from "../Models/user.model.js";  // ✅ Correct for default export
+import Listing from '../Models/listing.midel.js';
 
 
 export const test = (req , res) => {
@@ -45,4 +46,17 @@ export const deleteUser = async (req, res) => {
       res.status(500).json(err);
     }
   };
-  
+
+  export const getuserListing = async(req,res , next) => {
+    if(req.user.id === req.params.id ){
+      try{
+        const listing = await Listing.find({userRef: req.params.id});
+        res.status(200).json(listing);
+      }catch(error){
+        next(error)
+      }
+    }else{
+      return next(errHandler(401,"You can only view your own listing!"))
+
+    }
+  }
