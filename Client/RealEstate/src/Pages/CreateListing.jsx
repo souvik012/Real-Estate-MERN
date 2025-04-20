@@ -85,6 +85,7 @@ export default function CreateListing() {
       imageUrls: formData.imageUrls.filter((_, i) => i !== index),
     });
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -92,7 +93,7 @@ export default function CreateListing() {
     if (formData.offer && +formData.discountedPrice >= +formData.regularPrice) {
       return toast.error('Discounted price must be less than regular price');
     }
-    
+    console.log("Submitting listing with:", formData);
     try {
       const res = await fetch('http://localhost:3000/api/listing/create', {
         method: 'POST',
