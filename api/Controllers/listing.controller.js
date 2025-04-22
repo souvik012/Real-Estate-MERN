@@ -1,5 +1,6 @@
 import Listing from "../Models/listing.midel.js";
 import cloudinary from '../Utils/cloudinary.js';
+import { errHandler } from "../Utils/error.js";
 
 const streamUpload = (fileBuffer) => {
   return new Promise((resolve, reject) => {
@@ -45,3 +46,26 @@ export const createListing = async (req, res, next) => {
     next(error);
   }
 };
+
+export const deleteListing = async (req, res, next) => {
+  try {
+    const listing = await Listing.findById(req.params.id);
+
+    if (!listing) {
+      return next(errHandler(404, 'Listing not found!'));
+    }
+
+    if (req.user.id !== listing.userRef.toString()) {
+      return next(errHandler(401, 'You can only delete your own listing'));
+    }
+
+    await Listing.findByIdAndDelete(req.params.id);
+
+    return res.status(200).json({ success: true, message: 'Listing deleted' });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+

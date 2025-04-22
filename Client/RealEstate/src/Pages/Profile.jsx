@@ -86,7 +86,12 @@ import Listing from '../../../../api/Models/listing.midel';
     }
   };
   const handleShowListing = async() => {
-     
+    
+    if (userListings && userListings.length > 0) {
+      setUserListings([]); // hide listings
+      return;
+    }
+
     try {
       setShowListingError(false)
       const res = await fetch(`/api/user/listing/${currentuser._id}`)
@@ -102,6 +107,35 @@ import Listing from '../../../../api/Models/listing.midel';
     }
 
   }
+  const handleListingDelete = async (listingId) => {
+    const confirmed = window.confirm("Are you sure you want to delete this listing?");
+    if (!confirmed) return;
+    
+    try {
+      const res = await fetch(`/api/listing/delete/${listingId}`, {
+        method: 'DELETE',
+        credentials: 'include', // make sure cookies are sent if using JWT in cookies
+      });
+  
+      const data = await res.json();
+  
+      if (!res.ok || data.success === false) {
+        toast.error(data.message || "Failed to delete listing");
+        return;
+      }
+  
+      // Remove listing from state 
+      setUserListings((prev) => prev.filter((item) => item._id !== listingId));
+      toast.success("Listing deleted successfully");
+  
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong while deleting");
+    }
+  };
+  
+
+
   
   return (
     <div className='p-3 max-w-lg mx-auto'>
@@ -150,7 +184,10 @@ import Listing from '../../../../api/Models/listing.midel';
           </h1>
 
       {userListings.map((listing) => {
-    console.log('Full listing object:', listing); // 👀 See what this looks like
+    console.log('Full listing object:', listing);
+    
+
+    
 
     return (
       <div key={listing._id} className='border rounded-lg p-3 flex
