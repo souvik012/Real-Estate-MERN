@@ -200,7 +200,7 @@ import Listing from '../../../../api/Models/listing.midel';
             "
           />
         </Link>
-        <Link to = {`/listing/${Listing._id}`}>
+        <Link to = {`/listing/${listing._id}`}>
          
           <p className='text-blue-700 font-semibold  hover:underline truncate flex-1'>{listing.name}</p>
 
