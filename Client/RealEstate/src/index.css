@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
 body{
-    background-color: rgb(217, 242, 247);
+    font-family: 'Inter', sans-serif;
+    background-color: #f9fafb; /* light neutral background */
+   color: #111827; /* dark text for contrast */
+    
 }

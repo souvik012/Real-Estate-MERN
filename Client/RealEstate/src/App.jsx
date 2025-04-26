@@ -10,6 +10,7 @@ import Header from './Components/Header'
 import PrivateRoute from './Components/PrivateRoute'
 import CreateListing from './Pages/CreateListing';
 import UpdateListing from './Pages/UpdateListing';
+import Listing from './Pages/Listing';
 function App() {
   
 
@@ -25,6 +26,7 @@ function App() {
          <Route path='/update-listing/:listingId' element={<UpdateListing/>}></Route>
          </Route>
          <Route path='/About' element={<About />}/>
+         <Route path='/listing/:listingId' element={<Listing />}/>
     </Routes>
     <>
       {/* your routes/components */}
