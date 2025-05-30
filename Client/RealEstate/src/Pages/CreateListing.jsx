@@ -6,19 +6,21 @@ export default function CreateListing() {
   const [files, setFiles] = useState([]);
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    address: '',
-    type: 'rent',
-    bedrooms: 1,
-    bathrooms: 1,
-    regularPrice: 0,
-    discountedPrice: 0,
-    offer: false,
-    parking: false,
-    furnished: false,
-    imageUrls: [],
-  });
+  name: '',
+  description: '',
+  address: '',
+  type: 'rent',
+  bedrooms: 1,
+  bathrooms: 1,
+  regularPrice: 0,
+  discountedPrice: 0,
+  offer: false,
+  parking: false,
+  furnished: false,
+  imageUrls: [],
+  contactNumber: '', 
+});
+
 
   const [imageUploadError, setImageUploadError] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -119,6 +121,14 @@ export default function CreateListing() {
     <input type='text' placeholder='Name' id='name' required onChange={handleChange} className='border p-3 rounded' />
     <textarea placeholder='Description' id='description' required onChange={handleChange} className='border p-3 rounded' />
     <input type='text' placeholder='Address' id='address' required onChange={handleChange} className='border p-3 rounded' />
+    <input
+      type='tel'
+       placeholder='Contact Number (e.g., +1 234 567 8901)'
+       id='contactNumber'
+       required
+       onChange={handleChange}
+       className='border p-3 rounded'
+    />
 
     <div className='flex gap-4'>
       <label className='flex items-center gap-2'>

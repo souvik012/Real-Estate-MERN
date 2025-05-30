@@ -19,6 +19,7 @@ export default function UpdateListing() {
     parking: false,
     furnished: false,
     imageUrls: [],
+    contactNumber: '',
   });
 
   const [imageUploadError, setImageUploadError] = useState(false);
@@ -50,7 +51,7 @@ export default function UpdateListing() {
   };
 
   const handleImageSubmit = () => {
-    if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
+    if (files.length > 0 && formData.imageUrls.length + files.length <= 6) {
       setUploading(true);
       setImageUploadError(false);
       const promises = [];
@@ -202,7 +203,7 @@ export default function UpdateListing() {
                 <span>Choose Images</span>
               </label>
               <input
-                onChange={(e) => setFiles(e.target.files)}
+               onChange={(e) => setFiles(Array.from(e.target.files))}
                 type='file'
                 id='images'
                 accept='image/*'

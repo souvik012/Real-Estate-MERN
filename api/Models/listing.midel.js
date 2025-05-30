@@ -54,6 +54,11 @@ const listingSchema = new mongoose.Schema(
             type: String,
             required: true,
           },
+          contactNumber: {
+            type: String,
+            required: true,
+          }
+
     },
     { timestamps: true }
 )
