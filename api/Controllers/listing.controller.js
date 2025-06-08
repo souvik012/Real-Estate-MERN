@@ -96,6 +96,8 @@ export const updateListing = async (req,res,next) => {
 
 }
 
+
+
 export const getListing = async (req,res,next) => {
   try {
     const listing = await Listing.findById(req.params.id)
@@ -107,4 +109,37 @@ export const getListing = async (req,res,next) => {
     next(error)
   }
 }
+
+export const getListings = async (req, res, next) => {
+ try {
+    const limit = parseInt(req.query.limit) || 10;
+    const startIndex = parseInt(req.query.startIndex) || 0;
+
+    // Filters
+    const offer = req.query.offer === 'true' ? true : req.query.offer === 'false' ? false : { $in: [true, false] };
+    const furnished = req.query.furnished === 'true' ? true : req.query.furnished === 'false' ? false : { $in: [true, false] };
+    const parking = req.query.parking === 'true' ? true : req.query.parking === 'false' ? false : { $in: [true, false] };
+    const type = req.query.type === 'sale' || req.query.type === 'rent' ? req.query.type : { $in: ['sale', 'rent'] };
+
+    const searchTerm = req.query.searchTerm || '';
+    const sortBy = req.query.sort || 'createdAt';
+    const sortOrder = req.query.order === 'asc' ? 1 : -1;
+
+    const listings = await Listing.find({
+      name: { $regex: searchTerm, $options: 'i' },
+      offer,
+      furnished,
+      parking,
+      type,
+    })
+      .sort({ [sortBy]: sortOrder })
+      .skip(startIndex)
+      .limit(limit);
+
+    return res.status(200).json(listings);
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+};
 

@@ -17,12 +17,13 @@ import { useSelector } from "react-redux";
 
 export default function Listing() {
   const [listing, setListing] = useState(null);
+  //const [landlord, setLandlord] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [copied, setCopied] = useState(false);
   const [contact, setContact] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-
+  
   const params = useParams();
   const { currentUser } = useSelector((state) => state.user);
 
