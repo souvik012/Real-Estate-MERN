@@ -16,6 +16,8 @@ export default function Search() {
     order: 'desc',
   });
 
+  const [showFilters, setShowFilters] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
   const [showMore, setShowMore] = useState(false);

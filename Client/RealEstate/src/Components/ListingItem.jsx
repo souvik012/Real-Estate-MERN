@@ -28,7 +28,7 @@ const ListingItem = ({ listing }) => {
           </p>
 
           <p className="text-green-600 font-semibold mt-2">
-            ₹{price != null ? price.toLocaleString('en-IN') : 'N/A'}
+            ${price != null ? price.toLocaleString('en-IN') : 'N/A'}
             {listing.type === 'rent' && ' / month'}
           </p>
 
