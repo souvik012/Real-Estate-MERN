@@ -123,38 +123,31 @@ export const getListings = async (req, res) => {
       startIndex = 0,
     } = req.query;
 
+    const limit = 9;
     const query = {};
 
-    // Only add filters if they are active
+    // Search by title or address prefix
     if (searchTerm) {
-      query.name = { $regex: searchTerm, $options: 'i' };
+      query.$or = [
+        { name: { $regex: searchTerm, $options: 'i' } },
+        { address: { $regex: `^${searchTerm}`, $options: 'i' } }
+      ];
     }
 
-    if (type && type !== 'all') {
-      query.type = type;
-    }
-
-    if (parking === 'true') {
-      query.parking = true;
-    }
-
-    if (furnished === 'true') {
-      query.furnished = true;
-    }
-
-    if (offer === 'true') {
-      query.offer = true;
-    }
+    if (type && type !== 'all') query.type = type;
+    if (parking === 'true') query.parking = true;
+    if (furnished === 'true') query.furnished = true;
+    if (offer === 'true') query.offer = true;
 
     const listings = await Listing.find(query)
-      .sort({ [sort]: order === 'desc' ? -1 : 1 })
-      .limit(9)
-      .skip(parseInt(startIndex));
+      .sort({ [sort]: order === 'asc' ? 1 : -1 })
+      .skip(Number(startIndex))
+      .limit(limit);
 
     res.status(200).json(listings);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Server error' });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
+
 
