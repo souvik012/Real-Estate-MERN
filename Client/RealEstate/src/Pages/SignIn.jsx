@@ -86,6 +86,12 @@ import OAuth from '../Components/OAuth.jsx'
       <OAuth/>
 
     </form>
+
+     <div className="text-right">
+   <Link to="/forgot-password" className="text-blue-700">Forgot Password?</Link>
+
+    </div>
+
     <div className='flex gap-2 mt-5'>
       <p>Don't have an account?</p>
       <Link to={"/signup"}>

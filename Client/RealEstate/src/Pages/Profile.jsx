@@ -46,9 +46,11 @@ import Listing from '../../../../api/Models/listing.midel';
         return
       }
       dispatch(updateusersuccess(data))
+      toast.success("Profile updated successfully");
 
     } catch (error) {
       dispatch(updateuserfailure(error.message))
+      
     }
   };
   const handleFileChange = (e) => {
