@@ -1,19 +1,23 @@
 import express from 'express';
-import { google, signin, signup } from '../Controllers/auth.controller.js';
-import { sendResetEmail } from '../Utils/sendEmail.js';
 import crypto from 'crypto';
 import bcryptjs from 'bcryptjs';
-import User from '../Models/user.model.js'; // adjust path if needed
+import User from '../Models/user.model.js';
+import { google, signin, signup } from '../Controllers/auth.controller.js';
+import { sendResetEmail, sendOtpEmail } from '../Utils/sendEmail.js';
+import { otpMap } from '../Utils/otpStore.js';
 
 const router = express.Router();
-const tokenMap = new Map(); // In-memory token store
 
-// EXISTING AUTH ROUTES
+// Token and OTP storage (in-memory)
+const tokenMap = new Map(); // reset-password tokens
+//const otpMap = new Map();   // email => { otp, expires }
+
+// 🔐 EXISTING AUTH ROUTES
 router.post("/signup", signup);
 router.post("/signin", signin);
 router.post("/google", google);
 
-// ✅ FORGOT PASSWORD: Generate token and send email
+// 🔁 FORGOT PASSWORD: Send reset link
 router.post('/forgot-password', async (req, res) => {
   try {
     const { email } = req.body;
@@ -26,19 +30,15 @@ router.post('/forgot-password', async (req, res) => {
       expires: Date.now() + 30 * 60 * 1000, // ⏰ 30 minutes
     });
 
-    console.log("Reset token generated:", token);
-    console.log("Email sent to:", email);
-
     await sendResetEmail(email, token);
     res.status(200).json({ message: 'Password reset link sent to your email.' });
-
   } catch (error) {
-    console.error('Forgot Password Error:', error.message);  // ✅ log error
+    console.error('Forgot Password Error:', error.message);
     res.status(500).json({ message: 'Server error' });
   }
 });
 
-// ✅ RESET PASSWORD: Validate token and update password
+// 🔁 RESET PASSWORD: Validate token
 router.post('/reset-password/:token', async (req, res) => {
   try {
     const { token } = req.params;
@@ -55,9 +55,49 @@ router.post('/reset-password/:token', async (req, res) => {
 
     res.status(200).json({ message: 'Password reset successfully' });
   } catch (error) {
-    console.error('Reset Password Error:', error.message);  // ✅ log error
+    console.error('Reset Password Error:', error.message);
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+// ✅ OTP GENERATION ROUTE
+router.post('/generate-otp', async (req, res) => {
+  try {
+    const { email } = req.body;
+    const otp = Math.floor(100000 + Math.random() * 900000); // 6-digit OTP
+
+    otpMap.set(email, {
+      otp,
+      expires: Date.now() + 5 * 60 * 1000, // 5 minutes
+    });
+
+    await sendOtpEmail(email, otp);
+    res.status(200).json({ message: 'OTP sent to email.' });
+  } catch (error) {
+    console.error('Generate OTP Error:', error.message);
+    res.status(500).json({ message: 'Failed to send OTP' });
+  }
+});
+
+// ✅ OTP VERIFICATION ROUTE
+router.post('/verify-otp', async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    const data = otpMap.get(email);
+
+    if (!data || data.otp !== parseInt(otp) || Date.now() > data.expires) {
+      return res.status(400).json({ message: 'Invalid or expired OTP' });
+    }
+
+    // Mark this email as verified
+    otpMap.set(email, { ...data, verified: true });
+
+    res.status(200).json({ message: 'OTP verified successfully' });
+  } catch (error) {
+    console.error('Verify OTP Error:', error.message);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 export default router;

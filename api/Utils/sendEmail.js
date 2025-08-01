@@ -1,17 +1,27 @@
 import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
+dotenv.config();
 
+
+console.log('EMAIL_USER:', process.env.EMAIL_USER);
+console.log('EMAIL_PASS:', process.env.EMAIL_PASS);
+
+
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+// 🔁 1. Send Password Reset Email
 export const sendResetEmail = async (to, token) => {
   try {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
     const resetLink = `${process.env.BASE_URL}/reset-password/${token}`;
-    console.log("Sending email to:", to);
+    console.log("Sending password reset email to:", to);
     console.log("Reset link:", resetLink);
 
     const mailOptions = {
@@ -27,9 +37,33 @@ export const sendResetEmail = async (to, token) => {
     };
 
     await transporter.sendMail(mailOptions);
-    console.log("✅ Email sent successfully");
+    console.log("✅ Password reset email sent");
   } catch (error) {
-    console.error('Send Email Error:', error.message); // ✅ log error
+    console.error('❌ Send Reset Email Error:', error.message);
+    throw error;
+  }
+};
+
+// 🔁 2. Send OTP Email
+export const sendOtpEmail = async (to, otp) => {
+  try {
+    console.log("Sending OTP email to:", to);
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to,
+      subject: 'Your OTP for LandQueue Login/Signup',
+      html: `
+        <h3>Hello,</h3>
+        <p>Your One-Time Password (OTP) is:</p>
+        <h2>${otp}</h2>
+        <p>This OTP is valid for 5 minutes.</p>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log("✅ OTP email sent");
+  } catch (error) {
+    console.error('❌ Send OTP Email Error:', error.message);
     throw error;
   }
 };
